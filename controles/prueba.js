@@ -5,7 +5,7 @@ let db = require('knex')(config[env])
 
 let getDatos = (req, res) => {
     let tabla = req.query.tabla
-    let campos = req.query.tabla
+    let campos = req.query.campos
     db.select(campos).from(tabla)
         .then(resultado => {
             return res.status(200).json({
@@ -25,24 +25,21 @@ let getDatos = (req, res) => {
 
 let postDatos = (req, res) => {
     let tabla = req.body.tabla
-    let retorno = req.body.retorno
     let datos = req.body.datos
-    db(tabla).returning(retorno).insert(datos)
+    db(tabla).returning('id').insert(datos)
         .then(resultado => {
             return res.status(200).json({
                 ok: true,
-                datos: resultado,
-                mensaje: `Se insertaron los datos`
+                datos: resultado
             })
         })
-
-    .catch((error) => {
-        return res.status(500).json({
-            ok: false,
-            datos: null,
-            mensaje: `Error del servidor: ${error}`
+        .catch((error) => {
+            return res.status(500).json({
+                ok: false,
+                datos: null,
+                mensaje: `Error del servidor: ${error}`
+            })
         })
-    })
 }
 
 // let updateDatos = (req, res) => {
