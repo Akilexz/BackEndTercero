@@ -90,8 +90,8 @@ let updateDatos = (req, res) => {
 
 let deleteDatos = (req, res) => {
     let tabla = req.body.tabla
-    let id = req.body.id
-    db(tabla).where('id', id).delete()
+    let dataId = req.body.datoId
+    db(tabla).where('id', dataId).delete()
         .then(resultado => {
             return res.status(200).json({
                 ok: true,
@@ -107,11 +107,31 @@ let deleteDatos = (req, res) => {
         })
     })
 }
+let getDatosbyID = (req, res) => {
+    let tabla = req.query.tabla
+    let campo = req.query.campo
+    let id = req.query.id
+    db.select(campo).from(tabla).where('id', id)
+        .then(resultado => {
+            return res.status(200).json({
+                ok: true,
+                datos: resultado
+            })
+        })
+        .catch((error) => {
+            return res.status(500).json({
+                ok: false,
+                datos: null,
+                mensaje: `Error del servidor: ${error}`
+            })
+        })
+}
 
 
 module.exports = {
     getDatos,
     postDatos,
     updateDatos,
-    deleteDatos
+    deleteDatos,
+    getDatosbyID
 }
