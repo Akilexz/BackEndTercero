@@ -65,10 +65,35 @@ let postDatos = (req, res) => {
 //         })
 //     })
 // }
+// let updateDatos = (req, res) => {
+//         // console.log(req, res)
+//         let tabla = req.body.tabla
+//         let datoId = req.body.datoId
+//         datoId.forEach(element => {
+//             db(tabla).where('id', element.id).update(element)
+//                 .then(resultado => {
+//                     return res.status(200).json({
+//                         ok: true,
+//                         data: resultado,
+//                         mensaje: `se actualizo el registro`
+//                     })
+//                 })
+//                 .catch((error) => {
+//                     return res.status(500).json({
+//                         ok: false,
+//                         data: null,
+//                         mensaje: `error ${error}`
+//                     })
+//                 })
+//         })
+//     }
 let updateDatos = (req, res) => {
-    let tabla = req.body.tabla
-    let datos = req.body.datos
-    datos.forEach(element => {
+    console.log(req.body);
+    let tabla = req.body.tabla;
+    let datoId = req.body.datoId;
+    // console.log(datoId);
+    // console.log(tabla);
+    datoId.forEach(element => {
         db(tabla).where('id', element.id).update(element)
             .then(resultado => {
                 return res.status(200).json({
@@ -86,8 +111,6 @@ let updateDatos = (req, res) => {
             })
     })
 }
-
-
 let deleteDatos = (req, res) => {
     let tabla = req.body.tabla
     let dataId = req.body.datoId
