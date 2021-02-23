@@ -42,51 +42,6 @@ let postDatos = (req, res) => {
         })
 }
 
-// let updateDatos = (req, res) => {
-//     let tabla = req.body.tabla
-//     let datos = req.body.tabla
-//     let contenedor = ''
-//     datos.forEach(element => {
-//         contenedor = element
-//     })
-//     db(tabla).where('id', contenedor.id).update(contenedor)
-//         .then(resultado => {
-//             return res.status(200).json({
-//                 ok: true,
-//                 datos: resultado
-//             })
-//         })
-
-//     .catch((error) => {
-//         return res.status(500).json({
-//             ok: false,
-//             datos: null,
-//             sms: `Error en el servidor ${error}`
-//         })
-//     })
-// }
-// let updateDatos = (req, res) => {
-//         // console.log(req, res)
-//         let tabla = req.body.tabla
-//         let datoId = req.body.datoId
-//         datoId.forEach(element => {
-//             db(tabla).where('id', element.id).update(element)
-//                 .then(resultado => {
-//                     return res.status(200).json({
-//                         ok: true,
-//                         data: resultado,
-//                         mensaje: `se actualizo el registro`
-//                     })
-//                 })
-//                 .catch((error) => {
-//                     return res.status(500).json({
-//                         ok: false,
-//                         data: null,
-//                         mensaje: `error ${error}`
-//                     })
-//                 })
-//         })
-//     }
 let updateDatos = (req, res) => {
     console.log(req.body);
     let tabla = req.body.tabla;
@@ -149,12 +104,105 @@ let getDatosbyID = (req, res) => {
             })
         })
 }
+let getClientes = (req, res) => {
+    db.raw('select * from clientes order by id desc limit 1')
+        .then(resultado => {
+            return res.status(200).json({
+                ok: true,
+                datos: resultado.rows
+            })
+        })
+        .catch((error) => {
+            return res.status(500).json({
+                ok: false,
+                datos: null,
+                mensaje: `Error del servidor: ${error}`
+            })
+        })
+}
+let getJOin = (req, res) => {
+    db.raw('select clientes.id,clientes.nombre,clientes.apellido,clientes.identificacion,clientes.email,clientes.idgestion,gestion.titulo,gestion.fecha,gestion.hora from gestion inner join clientes on gestion.id=clientes.idgestion order by fecha desc')
+        .then(resultado => {
+            return res.status(200).json({
+                ok: true,
+                datos: resultado.rows
+            })
+        })
+        .catch((error) => {
+            return res.status(500).json({
+                ok: true,
+                datos: null,
+                mensaje: `Error del servidor: ${error}`
+            })
+        })
+}
 
+// let login = (req, res) => {
+//     // const newLocal = 'select * from clientes where clientes.identificacion=?1 '
+//     let tabla = req.body.tabla
+//     let datos = req.body.datos
+//         // console.log(tabla)
+//     console.log(datos)
+
+//     // db.raw(`select clientes from clientes where identificacion=? ${datos}`)
+//     db.select(tabla).from(tabla).where(datos)
+//         // console.log(db.raw)
+//         // db.raw(newLocal)
+//         .then(resultado => {
+//             return res.status(200).json({
+//                 ok: true,
+//                 datos: resultado
+//             })
+//         })
+//         .catch((error) => {
+//             return res.status(500).json({
+//                 ok: true,
+//                 datos: null,
+//                 mensaje: `Error del servidor: ${error}`
+//             })
+//         })
+//     if (data = datos) {
+//         console.log("identificacion aceptada")
+//     } else {
+//         console.log("identificacion no valida")
+//     }
+// }
+let logueo = (req, res) => {
+    let user = req.body.user;
+    let password = req.body.password;
+    db.raw(`select * from login where correo = '${user}'`)
+        .then(resultado => {
+            // console.log(resultado.rows[0].correo);
+            if (resultado.rows[0].contrasena == password && resultado.rows[0].correo == user) {
+                return res.status(200).json({
+                    ok: true,
+                    datos: resultado.rows,
+                    mensaje: 'usurio correcto'
+                })
+            } else {
+                return res.status(500).json({
+                    ok: false,
+                    datos: null,
+                    mensaje: 'usuario u contraseña incorrectos'
+                })
+            }
+        })
+        .catch((error) => {
+            return res.status(500).json({
+                ok: false,
+                datos: null,
+                mensaje: `Error del servidor: ${error}`
+            })
+        })
+}
 
 module.exports = {
     getDatos,
     postDatos,
     updateDatos,
     deleteDatos,
-    getDatosbyID
+    getDatosbyID,
+    getClientes,
+    getJOin,
+    logueo
 }
